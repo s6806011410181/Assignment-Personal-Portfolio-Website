@@ -1,0 +1,254 @@
+/* การตั้งค่าพื้นฐาน */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh; /* << สูงอย่างน้อย 100% ของความสูงหน้าจอ เพื่อให้ปรับขนาดอัตโนมัติ */
+    display: flex; /* << ใช้ Flexbox เพื่อจัดกลาง */
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    overflow: auto; /* << เปลี่ยนเป็น auto เพื่อให้หน้าเว็บเลื่อนได้ถ้าคอนเทนต์ยาวเกิน */
+    padding: 0;
+    margin: 0;
+}
+
+/* พื้นหลัง Animation */
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+.floating-shape { position: absolute; border-radius: 50%; opacity: 0.1; animation: float 20s infinite ease-in-out; }
+.shape1 { width: 300px; height: 300px; background: linear-gradient(45deg, #00d4ff, #7b2ff7); top: 10%; left: 10%; animation-delay: 0s; }
+.shape2 { width: 200px; height: 200px; background: linear-gradient(45deg, #ff00ff, #00d4ff); bottom: 15%; right: 10%; animation-delay: 5s; }
+.shape3 { width: 250px; height: 250px; background: linear-gradient(45deg, #7b2ff7, #ff00ff); top: 50%; right: 20%; animation-delay: 10s; }
+@keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(50px, -50px) scale(1.1); } 66% { transform: translate(-30px, 30px) scale(0.9); } }
+
+/* กล่องเนื้อหาหลัก */
+.container {
+    position: relative;
+    z-index: 1;
+    width: 50%; /* << ความกว้างเป็น 50% ของ body (ปรับตามจอ) */
+    min-height: 90%; /* << ความสูงอย่างน้อย 90% ของ body */
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    padding: 40px;
+    animation: slideIn 0.8s ease-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+@keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ส่วนหัว */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    flex-shrink: 0;
+}
+.header h1 {
+    /* << ใช้ clamp() เพื่อให้ฟอนต์ปรับขนาดตามความกว้างจออย่างลื่นไหล */
+    font-size: clamp(32px, 5vw, 56px);
+    background: linear-gradient(45deg, #00d4ff, #ff00ff, #7b2ff7);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 4s ease infinite;
+    margin-bottom: 10px;
+}
+@keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+.header p {
+    /* << ใช้ clamp() กับฟอนต์ย่อยด้วย */
+    font-size: clamp(14px, 2vw, 20px);
+    color: #b8b8d4;
+    font-weight: 300;
+}
+
+/* ตารางเมนู */
+.menu-grid {
+    display: grid;
+    /* << สร้าง 2 คอลัมน์เท่าๆ กัน */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+    flex-shrink: 0;
+}
+
+/* รายการเมนู */
+.menu-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    /* << ใช้ clamp() กับ padding เพื่อให้ระยะห่างภายในปรับตามขนาดจอ */
+    padding: clamp(15px, 2.5vh, 30px) clamp(15px, 2vw, 30px);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.menu-item::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: linear-gradient(45deg, rgba(0, 212, 255, 0.2), rgba(255, 0, 255, 0.2)); transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s; }
+.menu-item:hover::before { width: 300px; height: 300px; }
+.menu-item:hover { transform: translateY(-10px); border-color: rgba(0, 212, 255, 0.5); box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3); background: rgba(255, 255, 255, 0.08); }
+a.menu-item { text-decoration: none; color: inherit; display: flex; }
+.menu-icon { font-size: clamp(32px, 4vw, 48px); margin-bottom: 15px; position: relative; z-index: 1; display: inline-block; transition: transform 0.4s ease; }
+.menu-item:hover .menu-icon { transform: scale(1.2) rotate(5deg); }
+.menu-item h3 { font-size: clamp(18px, 2.5vw, 24px); margin-bottom: 8px; position: relative; z-index: 1; background: linear-gradient(45deg, #00d4ff, #ff00ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.menu-item p { font-size: clamp(12px, 1.5vw, 14px); color: #b8b8d4; position: relative; z-index: 1; line-height: 1.6; }
+
+/* พื้นที่แสดงเนื้อหา */
+.content-area {
+    margin-top: 30px;
+    padding: clamp(15px, 3vh, 30px);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 150px;
+    display: none;
+    animation: fadeIn 0.5s ease;
+    overflow-y: auto;
+}
+.content-area.active { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.content-area h2 { font-size: clamp(24px, 3.5vw, 32px); margin-bottom: 15px; background: linear-gradient(45deg, #00d4ff, #ff00ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.content-area p { font-size: clamp(14px, 1.8vw, 16px); line-height: 1.8; color: #b8b8d4; margin-bottom: 15px; }
+
+/* ตารางแกลเลอรี่ */
+.gallery-grid {
+    display: grid;
+    /* << เริ่มต้นที่ 3 คอลัมน์ */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+.gallery-item { aspect-ratio: 1; background: rgba(255, 255, 255, 0.05); border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; font-size: 14px; color: #b8b8d4; transition: all 0.3s ease; cursor: pointer; overflow: hidden; }
+.gallery-item:hover { background: rgba(255, 255, 255, 0.1); transform: scale(1.05); }
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 15px; }
+
+/* ฟอร์มติดต่อ */
+.contact-form { display: grid; gap: 20px; }
+.form-group input, .form-group textarea { width: 100%; padding: 15px; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: #fff; font-size: 16px; font-family: inherit; transition: all 0.3s ease; }
+.form-group input:focus, .form-group textarea:focus { outline: none; border-color: #00d4ff; background: rgba(255, 255, 255, 0.08); }
+.form-group textarea { resize: vertical; min-height: 120px; }
+.submit-btn { padding: 15px 40px; background: linear-gradient(45deg, #00d4ff, #7b2ff7); border: none; border-radius: 10px; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+.submit-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4); }
+
+.social-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.social-icon {
+    display: inline-block;
+    color: #fff;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+    color: #00d4ff;
+}
+
+.social-details h3 {
+    font-size: clamp(18px, 2.5vw, 22px);
+    margin-bottom: 8px;
+    background: linear-gradient(45deg, #00d4ff, #ff00ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.social-details p {
+    font-size: clamp(14px, 1.8vw, 16px);
+    color: #b8b8d4;
+    line-height: 1.6;
+}
+.skills-list { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+.skill-tag { padding: 10px 20px; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 20px; color: #00d4ff; font-size: 14px; transition: all 0.3s ease; }
+.skill-tag:hover { background: rgba(0, 212, 255, 0.2); transform: translateY(-3px); }
+
+/* ================================== */
+/* ส่วนของการปรับแก้ตามขนาดหน้าจอ (Media Queries) */
+/* ================================== */
+
+/* เมื่อหน้าจอกว้างไม่เกิน 768px (แท็บเล็ต) */
+@media (max-width: 768px) {
+    .container {
+        width: 90vw; /* << ขยายกล่องหลักให้กว้างเกือบเต็มจอ */
+        min-height: 90vh;
+        padding: 20px;
+        border-radius: 20px;
+    }
+    .menu-grid {
+        grid-template-columns: 1fr; /* << เปลี่ยนเมนูเป็น 1 คอลัมน์ */
+        gap: 15px;
+    }
+    .menu-item {
+        min-height: 120px;
+    }
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr); /* << เปลี่ยนแกลเลอรี่เป็น 2 คอลัมน์ */
+        gap: 10px;
+    }
+    .content-area {
+        padding: 15px;
+        margin-top: 20px;
+    }
+}
+
+/* เมื่อหน้าจอกว้างไม่เกิน 480px (มือถือ) */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px; /* << ลดระยะห่างภายในลงอีก */
+    }
+    .menu-item {
+        min-height: 100px;
+    }
+    .gallery-grid {
+        grid-template-columns: 1fr; /* << เปลี่ยนแกลเลอรี่เป็น 1 คอลัมน์ */
+    }
+}
+
+/* เมื่อหน้าจอกว้างตั้งแต่ 1400px ขึ้นไป (จอใหญ่) */
+@media (min-width: 1400px) {
+    .container {
+        width: 60%;
+        max-width: 1400px; /* << จำกัดความกว้างสูงสุด ไม่ให้กว้างเกินไปบนจอใหญ่ๆ */
+    }
+}
+
+/* แต่ง Scrollbar */
+.container::-webkit-scrollbar,
+.content-area::-webkit-scrollbar { width: 8px; }
+.container::-webkit-scrollbar-track,
+.content-area::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+.container::-webkit-scrollbar-thumb,
+.content-area::-webkit-scrollbar-thumb { background: linear-gradient(45deg, #00d4ff, #7b2ff7); border-radius: 10px; }
+.container::-webkit-scrollbar-thumb:hover,
+.content-area::-webkit-scrollbar-thumb:hover { background: linear-gradient(45deg, #00b8e6, #6a29d4); }
